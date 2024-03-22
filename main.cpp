@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cmath>
 #include <cassert>
+#include <type_traits>
+
 using namespace std;
 
 template <typename tmp>
@@ -43,18 +45,18 @@ Vector<tmp> CinDimension(){
     return Vector<tmp>(i);
 }
 
-template <typename tmp, typename = typename enable_if<is_arithmetic<tmp>::value>::type>
+template <typename tmp>
 Vector<tmp> CinElements(Vector<tmp> myvector){
     cout<<"Input elements: "<<endl;
     for(int i = 0; i < myvector.GetD(); ++i){
-        double value;
+        tmp value;
         cout<<"V["<<i+1<<"] = "; cin>>value;
         myvector.SetElement(i, value);
     }
     return myvector;
 }
 
-template <typename tmp, typename = typename enable_if<is_arithmetic<tmp>::value>::type>
+template <typename tmp>
 void CoutElements(Vector<tmp> myvector){
     cout<<"["<<myvector.GetD()<<"] = { ";
     for(int i = 0; i < myvector.GetD(); ++i){
@@ -67,58 +69,38 @@ void CoutElements(Vector<tmp> myvector){
 
 template <typename tmp, typename = typename enable_if<is_arithmetic<tmp>::value>::type>
 Vector<tmp> Sum(Vector<tmp> addend1, Vector<tmp> addend2){
-    try{
-        if(addend1.GetD() != addend2.GetD()){
-            throw(invalid_argument("Different dimensions!"));
-        }
-        Vector<tmp> sum(addend1.GetD());
-        for(int i = 0; i < addend1.GetD(); ++i){
-            sum.GetV()[i] = addend1.GetV()[i] + addend2.GetV()[i];
-        }
-        return sum;
+    if(addend1.GetD() != addend2.GetD()){
+        throw(invalid_argument("Different dimensions!"));
     }
-
-    catch(invalid_argument& myexception){
-        cout<<myexception.what();
-        throw;
+    Vector<tmp> sum(addend1.GetD());
+    for(int i = 0; i < addend1.GetD(); ++i){
+        sum.GetV()[i] = addend1.GetV()[i] + addend2.GetV()[i];
     }
+    return sum;
 }
 
 template <typename tmp, typename = typename enable_if<is_arithmetic<tmp>::value>::type>
 Vector<tmp> Sub(Vector<tmp> saklebi, Vector<tmp> maklebi){
-    try{
-        if(saklebi.GetD() != maklebi.GetD()){
-            throw(invalid_argument("Different dimensions!"));
-        }
-        Vector<tmp> sub(saklebi.GetD());
-        for(int i = 0; i < saklebi.GetD(); ++i){
-            sub.GetV()[i] = saklebi.GetV()[i] - maklebi.GetV()[i];
-        }
-        return sub;
+    if(saklebi.GetD() != maklebi.GetD()){
+        throw(invalid_argument("Different dimensions!"));
     }
-
-    catch(invalid_argument& myexception){
-        cout<<myexception.what();
-        throw;
+    Vector<tmp> sub(saklebi.GetD());
+    for(int i = 0; i < saklebi.GetD(); ++i){
+        sub.GetV()[i] = saklebi.GetV()[i] - maklebi.GetV()[i];
     }
+    return sub;
 }
 
 template <typename tmp, typename = typename enable_if<is_arithmetic<tmp>::value>::type>
 tmp ScalarProduct(Vector<tmp> v1, Vector<tmp> v2){
-    try{
-        if(v1.GetD() != v2.GetD()){
-            throw(invalid_argument("Different dimensions!"));
-        }
-        tmp scalarproduct = 0;
-        for(int i = 0; i < v1.GetD(); ++i){
-            scalarproduct += v1.GetV()[i] * v1.GetV()[i];
-        }
-        return scalarproduct;
+    if(v1.GetD() != v2.GetD()){
+        throw(invalid_argument("Different dimensions!"));
     }
-    catch(invalid_argument& myexception){
-        cout<<myexception.what();
-        throw;
+    tmp scalarproduct = 0;
+    for(int i = 0; i < v1.GetD(); ++i){
+        scalarproduct += v1.GetV()[i] * v1.GetV()[i];
     }
+    return scalarproduct;
 }
 
 template <typename tmp, typename = typename enable_if<is_arithmetic<tmp>::value>::type>
@@ -133,7 +115,7 @@ tmp DecLength(Vector<tmp> myvector){
 // BIGGEST AND SMALLEST:
 
 template <typename tmp, typename = typename enable_if<is_arithmetic<tmp>::value>::type>
-unsigned int BiggestElement(Vector<tmp> myvector){
+unsigned BiggestElement(Vector<tmp> myvector){
     unsigned int I = 0;
     for(int i = 1; i < myvector.GetD(); ++i){
         if(myvector.GetV()[I] < myvector.GetV()[i]){
@@ -156,7 +138,7 @@ unsigned int SmallestElement(Vector<tmp> myvector){
 
 // OPERATORS OVERLOADING:
 
-template <typename tmp, typename = typename enable_if<is_arithmetic<tmp>::value>::type>
+template <typename tmp>
 ostream& operator<<(ostream& os, Vector<tmp> myvector){
     for(unsigned int i = 0; i < myvector.GetD(); ++i){
         os<<myvector.GetV()[i]<<endl;
@@ -165,15 +147,18 @@ ostream& operator<<(ostream& os, Vector<tmp> myvector){
 }
 
 int main(int argc, char* argv[]){
-
-    Vector<double> vector1 = CinDimension<double>();
-    Vector<double> vector2 = CinDimension<double>();
+        Vector vector1 = CinDimension<char>();
+    Vector vector2 = CinDimension<char>();
 
     CinElements(vector1);
     CinElements(vector2);
 
-    cout<<Sum(vector1, vector2);
-    cout<<Sub(vector1, vector2);
+    try{
+        cout<<Sum<char>(vector1, vector2);
+    }
+    catch(exception& myexception){
+        cout<<"Error: "<<myexception.what();
+    }
 
     return 0;
 }
