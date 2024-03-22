@@ -147,7 +147,7 @@ ostream& operator<<(ostream& os, Vector<tmp> myvector){
 }
 
 int main(int argc, char* argv[]){
-        Vector vector1 = CinDimension<char>();
+    Vector vector1 = CinDimension<char>();
     Vector vector2 = CinDimension<char>();
 
     CinElements(vector1);
