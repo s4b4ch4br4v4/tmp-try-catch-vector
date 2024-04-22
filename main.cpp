@@ -157,7 +157,7 @@ int main(int argc, char* argv[]){
         cout<<Sum<char>(vector1, vector2);
     }
     catch(exception& myexception){
-        cout<<"Error: "<<myexception.what();
+        cerr<<"Error: "<<myexception.what();
     }
 
     return 0;
